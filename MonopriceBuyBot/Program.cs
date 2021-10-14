@@ -38,7 +38,7 @@ namespace MonopriceBuyBot
             var password = args[1];
             var creditCardCCV = args[2];
             var firstName = args[3]; // must match whats shown in the menu "My Account" when not logged in "{YOUR_NAME_HERE}'s Account" when logged in
-            
+
             // monoprice product id, and if its a preferred item vs another in the list (if both can be bought buy the preferred one
             // This would require a rework if trying to buy multiple items
 
@@ -71,8 +71,11 @@ namespace MonopriceBuyBot
                                     continue;
                                 }
 
-                                Fill("//input[@placeholder='Product #' and @name='p_id']", itemsToBuy[0].ID);
-                                Fill("//input[@placeholder='Product #' and @name='p_id1']", itemsToBuy[1].ID);
+                                for (var i = 0; i < Math.Min(itemsToBuy.Length, 3); ++i)
+                                {
+                                    var fieldId = i == 0 ? string.Empty : i.ToString();
+                                    Fill($"//input[@placeholder='Product #' and @name='p_id{fieldId}']", itemsToBuy[i].ID);
+                                }
                                 Click("//a[@role='link' and @title='Add to Cart']");
                                 var cartItems = _driver.FindElementsByXPath("//li[@class='mp-cart-item']");
                                 while (cartItems.Count > 1)
